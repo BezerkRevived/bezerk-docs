@@ -1,7 +1,7 @@
 ---
-title: NetShow
-description: Documentation for NetShow
+title: NETSHOW - INDEX
+description: Documentation for netshow - index
 ---
 
-# NetShow
-Content for NetShow goes here.
+# NETSHOW - INDEX
+Placeholder content for the index section of netshow.

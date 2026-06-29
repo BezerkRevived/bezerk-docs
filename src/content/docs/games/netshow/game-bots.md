@@ -1,7 +1,7 @@
 ---
-title: Game Bots
-description: Documentation for NetShow Game Bots
+title: NETSHOW - GAME-BOTS
+description: Documentation for netshow - game-bots
 ---
 
-# Game Bots
-Content about game bots goes here.
+# NETSHOW - GAME-BOTS
+Placeholder content for the game-bots section of netshow.
