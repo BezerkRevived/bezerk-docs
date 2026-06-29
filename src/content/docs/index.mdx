@@ -1,40 +1,33 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
-hero:
-  tagline: Congrats on setting up a new Starlight project!
-  image:
-    file: ../../assets/houston.webp
-  actions:
-    - text: Example Guide
-      link: /guides/example/
-      icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
-      variant: minimal
+title: Bezerk Revival Documentation
+description: Archive and restoration project for classic titles.
+template: doc
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Next steps
+Welcome to the official documentation hub for the Bezerk Revival project. Here you will find guides, bot information, and technical details for restoring classic gaming titles.
 
-<CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
-	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
-	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
+## Explore the Archive
+
+<CardGrid>
+  <Card title="NetShow" icon="rocket">
+    Technical guides and documentation for the NetShow platform.
+    [View NetShow Docs](/games/netshow/)
+  </Card>
+  <Card title="Acrophobia" icon="puzzle">
+    Restoration notes and asset extraction for Acrophobia.
+    [View Acrophobia Docs](/games/acrophobia/)
+  </Card>
+  <Card title="Cosmic Consensus" icon="star">
+    Archives and community guides for Cosmic Consensus.
+    [View Cosmic Docs](/games/cosmic-consensus/)
+  </Card>
+  <Card title="Get The Picture" icon="camera">
+    Technical documentation for Get The Picture.
+    [View GTP Docs](/games/get-the-picture/)
+  </Card>
 </CardGrid>
+
+## Contributing
+We welcome community contributions. If you have found new data, updated bots, or improved extraction methods, please check the [GitHub repository](https://github.com/BezerkRevived/bezerk-docs).
