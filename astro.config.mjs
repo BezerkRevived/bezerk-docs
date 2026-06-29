@@ -23,6 +23,12 @@ export default defineConfig({
       ],
       sidebar: [
         {
+          label: "Library & Archives",
+          items: [
+            { label: "Client Installers", slug: "library/installers" },
+          ],
+        },
+        {
           label: "The Netshow",
           collapsed: true,
           items: [

@@ -1,0 +1,44 @@
+---
+title: Client Installers & Library
+description: A comprehensive catalog of Bezerk.com game installers, client status, and media availability.
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+
+This catalog tracks the status, media availability, and historical context of original Bezerk.com and WON.net game installers and clients preserved by the community.
+
+---
+
+## Interactive Client Status Registry
+
+| Game Name | Server Status | Media Status | Where It Was Found | Notes |
+|---|---|---|---|---|
+| **YDKJ Netshow 1.0** | <Badge text="OPERATIONAL" variant="success" /> | <Badge text="FOUND" variant="success" /> | Cookie client found in WON.net archives. Nate client bundled with other YDKJ games. Data files found in WebTV files. | Data for Nate Shapiro's version is lost. |
+| **YDKJ Netshow 1.5** | <Badge text="OPERATIONAL" variant="success" /> | <Badge text="FOUND" variant="success" /> | First client found in WON.net archives. Second client bundled with other YDKJ games. Data files were found in WebTV files. | One of the first YDKJ games to introduce the episode system. |
+| **Acrophobia** | <Badge text="OPEN BETA" variant="warning" /> | <Badge text="FOUND" variant="success" /> | Clients found in WON.net archives & bundled with Sierra games. Debug client found by SecondSight. Data files found by C WT. | Outlasted Bezerk's death and even had clones. |
+| **Acrophobia Demo** | <Badge text="OPERATIONAL" variant="success" /> | <Badge text="FOUND" variant="success" /> | Found in Demo folder in YDKJ Television by SecondSight. | A self-playing narrated gameplay video showcase. |
+| **Acrophobia Demo (Flash)** | <Badge text="OPERATIONAL" variant="success" /> | <Badge text="FOUND" variant="success" /> | Showcase, Bezerk intro, and Acrophobia intro SWFs found. | Showcase content. |
+| **Cosmic Consensus Demo** | <Badge text="OPERATIONAL" variant="success" /> | <Badge text="FOUND" variant="success" /> | Found on Nealy by SecondSight. Files are DCR formats. Shockwave Projector required. | Made for the MTV Movie Awards '99. The only offline Bezerk game. |
+| **Bezerk Promotional Video** | <Badge text="VIDEO" variant="note" /> | <Badge text="FOUND" variant="success" /> | Found in YDKJ Sports by C WT. | Nostalgic showcase promo video. |
+| **Cosmic Consensus** | <Badge text="BROKEN" variant="danger" /> | <Badge text="CLIENT FOUND" variant="caution" /> | Client found in WON.net archives. | Needs server restoration development. |
+| **What's The Big Idea?** | <Badge text="BROKEN" variant="danger" /> | <Badge text="CLIENT FOUND" variant="caution" /> | Found by Savvy Sage bundled with Hoyle Card Games 3. | Earlier version of Cosmic Consensus. |
+| **Get The Picture** | <Badge text="BROKEN" variant="danger" /> | <Badge text="CLIENT FOUND" variant="caution" /> | Found by C WT on a WON Online Game Pack disc. | Data files are lost, specifically the licensed images. |
+| **YDKJ Sports Netshow** | <Badge text="BROKEN" variant="danger" /> | <Badge text="CLIENT FOUND" variant="caution" /> | 1st client in WON.net archives. 2nd client bundled with other YDKJ games. | Playable but all the data questions are lost. |
+
+---
+
+## Preserved Assets & Downloads
+
+> [!TIP]
+> Do you have missing disks, older installer backups, or network packet logs from these games? Please reach out or file an issue/pull request on the [Bezerk Revival GitHub](https://github.com/BezerkRevived/bezerk-docs).
+
+### How to use these clients
+
+To set up any of the found clients locally, you will need to adjust the local registry paths and configure custom hosts redirections to redirect `dispatch.bezerk.com` and `content.bezerk.com` to your local web servers.
+
+Refer to the game-specific guides in the sidebar for details:
+*   [Acrophobia Setup](/bezerk-docs/games/acrophobia/how-tos/)
+*   [Cosmic Consensus Setup](/bezerk-docs/games/cosmic-consensus/how-tos/)
+*   [Get The Picture Setup](/bezerk-docs/games/get-the-picture/how-tos/)
+*   [YDKJ Net Show Setup](/bezerk-docs/games/netshow/how-tos/)

@@ -1,7 +1,92 @@
 ---
-title: GET-THE-PICTURE - EXTRACTING-CONTENT
-description: Documentation for get-the-picture - extracting-content
+title: Get The Picture — Extracting Content
+description: How to extract image assets and game data from the Get The Picture installer.
 ---
 
-# GET-THE-PICTURE - EXTRACTING-CONTENT
-Placeholder content for the extracting-content section of get-the-picture.
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+
+Get The Picture is heavily dependent on its image assets — the "pictures" progressively revealed to players. Extracting and hosting these images is critical for any revival effort.
+
+---
+
+## What Needs to Be Extracted
+
+| Asset | Purpose |
+|---|---|
+| Game images | The pictures players try to identify |
+| `Dispatch.ini` | Server routing config |
+| `UpdateScript.ini` | Content download manifest |
+| Registry values | Origin code `M1` and version |
+
+---
+
+## Registry Keys
+
+| Key | Value |
+|---|---|
+| `...\Get The Picture\Origin` | `M1` |
+| `...\Get The Picture\Version` | `1.0.0.26` |
+| `...\Get The Picture\Path` | Installation path |
+
+<Aside type="caution">
+If the `Path` registry key is missing, the client sends `err` or `NA+` as the origin code, which causes login to fail.
+</Aside>
+
+---
+
+## Extracting the Installer
+
+<Steps>
+
+1. **Obtain the installer** from abandonware archives.
+
+2. **Extract with 7-Zip:**
+   ```bash
+   7z x gtp_setup.exe -o./extracted/
+   ```
+
+3. **Identify image asset files.** Get The Picture images are likely stored in a proprietary format. Use a hex editor to examine unknown file types.
+
+4. **Capture network traffic** from an original client to see exactly which files are requested from the content server.
+
+5. **Host the extracted files** on your web server matching the paths in `UpdateScript.ini`.
+
+</Steps>
+
+---
+
+## Content Server Structure
+
+```
+/
+├── gtp/
+│   ├── dispatch.ini
+│   ├── validate.cgi
+│   └── content/
+│       ├── UpdateScript.ini
+│       ├── images/
+│       │   ├── 001.img
+│       │   ├── 002.img
+│       │   └── ...
+│       └── ...
+```
+
+---
+
+## Hosts File Redirect
+
+```
+127.0.0.1  dispatch.bezerk.com
+127.0.0.1  content.bezerk.com
+```
+
+---
+
+## Notes
+
+:::note
+The image format used by Get The Picture is not yet fully documented. If you have reverse-engineered the image format or captured the original content files, please contribute to the documentation!
+:::
+
+The progressive image reveal mechanism may work by sending only a portion of image data at a time over the IRC game room connection, or it may use a separate data channel. Protocol analysis is ongoing.

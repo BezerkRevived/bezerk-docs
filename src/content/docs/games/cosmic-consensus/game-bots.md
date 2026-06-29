@@ -1,7 +1,217 @@
 ---
-title: COSMIC-CONSENSUS - GAME-BOTS
-description: Documentation for cosmic-consensus - game-bots
+title: Cosmic Consensus — Game Bots
+description: Setting up the CosmicBot IRC server to host Cosmic Consensus.
 ---
 
-# COSMIC-CONSENSUS - GAME-BOTS
-Placeholder content for the game-bots section of cosmic-consensus.
+import { Steps, Aside, Badge } from '@astrojs/starlight/components';
+
+
+The **CosmicBot** (code-named `bigidea`) is the in-development IRC bot server for Cosmic Consensus revival. It is being built as a Python IRC bot that handles the full client connection lifecycle.
+
+- **Current Source:** `/home/nonasuomy/code/CosmicConsensus/ExtractingFinalVersion/Bezerk/Server/bigidea.py`
+- **Bot Downloads:** [gs.bezerk.uk/bigidea/](http://gs.bezerk.uk/bigidea/)
+
+<Badge text="In Progress" variant="caution" /> The bot is in early prototype stage.
+
+---
+
+## Architecture
+
+```
+[Cosmic Consensus Client]
+      │
+      ▼
+[Dispatch Server]    ──→  serves Dispatch.ini (HTTP)
+      │
+      ▼
+[Content Server]     ──→  serves UpdateScript.ini + assets (HTTP)
+      │
+      ▼
+[Registration Server] ──→  /big/validate.cgi  (HTTP CGI)
+      │
+      ▼
+[Game List IRC]      ──→  #Big_List channel (CosmicBot)
+      │
+      ▼
+[Game Room IRC]      ──→  #Big_000, etc. (CosmicBot)
+```
+
+---
+
+## IRC Protocol — Game List Server
+
+After registration, the client connects to IRC and joins `#Big_List`.
+
+### Client Login Sequence
+
+```
+Bot  → Client:  LN 0           (List Nick — you are the Nth player)
+Client → Bot:   L <username> <...version info...>
+Bot  → Client:  LA <username> <Version X.X.X.X> 0
+```
+
+### `LN` — List Nick Assignment
+Sent by bot immediately when a new client joins.
+```
+LN 0
+```
+| Field | Description |
+|---|---|
+| `0` | Player slot index |
+
+### `L` — Login (Client → Bot)
+Client sends their credentials.
+```
+L <username> <password> <version_part1> <version_part2> <version_part3> <version_part4>
+```
+| Field | Description |
+|---|---|
+| `<username>` | Account username |
+| `<version>` | 4-part game version number |
+
+### `LA` — Login Accepted (Bot → Client)
+```
+LA <username> Version X.X.X.X 0
+```
+
+---
+
+### `RR` — Room Request (Client → Bot)
+After login, client sends `RR` to request the room list.
+
+### Room List Response Sequence
+
+```
+Bot → Client:  RB 2              (Room Begin — 2 rooms follow)
+Bot → Client:  RI 0 BIR 1 2 3 R GIZA 127.0.0.1 6667 Big_000 mode 8 -1 9
+Bot → Client:  RI 1 BIR 1 2 3 R AGARTHA 127.0.0.1 6666 Big_000 mode 8 -1 9
+Bot → Client:  RE               (Room End)
+Bot → Client:  PLB 1            (Player List Begin — 1 player)
+Bot → Client:  PLI 0 BIP 0 0 0 P Cookie
+Bot → Client:  PLE              (Player List End)
+```
+
+#### `RI` — Room Item Format
+```
+RI <index> BIR <f1> <f2> <f3> <flags> <room_name> <host> <port> <channel> <mode> <cap> <rating> <extra>
+```
+| Field | Description |
+|---|---|
+| `<index>` | Room index (0-based) |
+| `BIR` | Room type identifier |
+| `<room_name>` | Display name of the room |
+| `<host>` | IRC server hostname/IP |
+| `<port>` | IRC server port |
+| `<channel>` | IRC channel name |
+| `<cap>` | Max players (`-1` = unlimited) |
+
+#### `PLI` — Player List Item Format
+```
+PLI <index> BIP <f1> <f2> <f3> <flags> <username>
+```
+| Field | Description |
+|---|---|
+| `<index>` | Player index |
+| `BIP` | Player type identifier |
+| `<username>` | Player's display name |
+
+### `RS` — Room Select (Client → Bot)
+Sent when the client selects a room to enter.
+
+### Session Start Response
+```
+Bot → Client:  SPA Ad sponsor.srf sponsor.srf 0   (Sponsor/Ad info)
+Bot → Client:  LOA -1                              (Leave old area)
+Bot → Client:  ST S 0 10000000 0 0 0              (Start session)
+```
+
+---
+
+## Registration Server — HTTP Endpoints
+
+### `/big/validate.cgi` — Login
+
+**Example Request (HTTP POST):**
+```
+player_name=user&password=pass&origin_code=b1&version=1.0.0.26&platform_code=W
+```
+
+| Field | Description |
+|---|---|
+| `player_name` | Username |
+| `password` | Password (plaintext!) |
+| `origin_code` | `b1` = Cosmic Consensus |
+| `version` | Game version |
+| `platform_code` | `W` = Windows |
+
+**Success Response:**
+```
+player_name=user&version=1.0.0.26&platform_code=W&player_id=746&playersession_id=6712950&adult=1&result=1
+```
+
+**Result Codes:**
+| Code | Meaning |
+|---|---|
+| `1` or `0.999` | Login successful |
+| `2` | CGI error / No content length |
+| `5` | Username not registered |
+| `6` | Incorrect username or password |
+| `8` | Bad username |
+| `10` | Account banned |
+| `11` | Email invalid |
+| `12` | Username expired |
+| `13` | Database error |
+
+---
+
+## CosmicBot Current Source
+
+The current prototype (`bigidea.py`) demonstrates the full login and room-listing flow:
+
+```python
+import socket, time
+IRCSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+IRCSock.connect(('127.0.0.1', 6666))
+IRCSock.send('USER CosmicTest CosmicTest CosmicTest :Testing bot for Cosmic Consensus\n'.encode())
+botname = 'ListNick'
+IRCSock.send(f'NICK {botname}\n'.encode())
+
+# ... handles:
+# - PING/PONG keepalive
+# - JOIN events → sends LN to new clients
+# - L messages → login acceptance → LA response
+# - RR messages → room list (RB/RI/RE + PLB/PLI/PLE)
+# - RS messages → session start (SPA + LOA + ST)
+```
+
+---
+
+## Setting Up CosmicBot
+
+<Steps>
+
+1. **Install Python 3.x**
+
+2. **Set up an IRC server (InspIRCd recommended)**
+
+   ```bash
+   sudo pacman -S inspircd   # Arch
+   sudo apt install inspircd # Debian/Ubuntu
+   ```
+
+3. **Configure InspIRCd** to listen on ports `6666` (list server) and `6667` (game rooms).
+
+4. **Run the bot:**
+   ```bash
+   python bigidea.py
+   ```
+
+5. **Set up HTTP server** for `/big/validate.cgi` registration endpoint.
+
+6. **Create `Dispatch.ini`** and host it on your content server.
+
+</Steps>
+
+<Aside type="note">
+The `SAS S 0 0 0 0 0` message is sent when a player tries to join a game while `ingame == 1`. This signals the session assignment sequence.
+</Aside>

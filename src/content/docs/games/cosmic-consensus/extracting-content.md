@@ -1,7 +1,106 @@
 ---
-title: COSMIC-CONSENSUS - EXTRACTING-CONTENT
-description: Documentation for cosmic-consensus - extracting-content
+title: Cosmic Consensus — Extracting Content
+description: How to extract game data and assets from the original Cosmic Consensus installer.
 ---
 
-# COSMIC-CONSENSUS - EXTRACTING-CONTENT
-Placeholder content for the extracting-content section of cosmic-consensus.
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+
+This guide covers extracting original game content from the Cosmic Consensus client installer for revival purposes.
+
+---
+
+## What Needs to Be Extracted
+
+| Asset | Purpose |
+|---|---|
+| `Dispatch.ini` | Tells the client which servers to connect to |
+| `UpdateScript.ini` | Client update manifest |
+| Question/poll data | The game's actual poll questions |
+| Media assets | Any audio or visual content |
+| Registry values | Origin code and version used in login |
+
+---
+
+## Known Client Version
+
+| Game | Origin Code | Validate Endpoint |
+|---|---|---|
+| Cosmic Consensus | `b1` | `/big/validate.cgi` |
+| Get The Picture | `M1` | `/gtp/validate.cgi` |
+
+<Aside type="note">
+The `origin_code` is read from the Windows Registry. If it's missing, the client sends `err` or `NA+` as the origin, which will cause login failures.
+</Aside>
+
+---
+
+## Extracting the Installer
+
+<Steps>
+
+1. **Obtain the original installer**
+
+   Find the Cosmic Consensus installer from abandonware archives.
+
+2. **Extract with 7-Zip**
+
+   ```bash
+   7z x cosmic_setup.exe -o./extracted/
+   ```
+
+3. **Locate `Dispatch.ini`**
+
+   Look in the installation directory for the dispatch config file. Replace the original Bezerk.com server with your own:
+   ```ini
+   [connection]
+   host=your.server.com
+   port=80
+   path=/big/dispatch.ini
+   ```
+
+4. **Locate `UpdateScript.ini`**
+
+   This drives the content delivery system. It lists files to download before launching the game.
+
+5. **Extract poll/question data**
+
+   Cosmic Consensus question data may be bundled in the install package or downloaded at runtime via the content server. Capture network traffic from the original client to identify what files are needed.
+
+</Steps>
+
+---
+
+## Registry Keys
+
+| Key | Value | Notes |
+|---|---|---|
+| `...\Cosmic Consensus\Path` | `C:\Program Files\Cosmic Consensus\` | Game path |
+| `...\Cosmic Consensus\Origin` | `b1` | Installer origin |
+| `...\Cosmic Consensus\Version` | `1.0.0.26` | Game version |
+
+---
+
+## Content Server Layout
+
+```
+/
+├── big/
+│   ├── dispatch.ini        (Dispatch.ini for Cosmic Consensus)
+│   ├── validate.cgi        (Registration endpoint)
+│   └── content/
+│       ├── UpdateScript.ini
+│       └── ...game files...
+```
+
+---
+
+## Hosts File Redirect
+
+The quickest way to redirect the client to your revival server:
+
+```
+# Windows hosts / Linux /etc/hosts
+127.0.0.1  dispatch.bezerk.com
+127.0.0.1  content.bezerk.com
+```
