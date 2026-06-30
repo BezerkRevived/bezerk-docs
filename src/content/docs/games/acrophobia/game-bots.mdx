@@ -5,7 +5,6 @@ description: Setting up the Acrobot IRC bot and registration server to host Acro
 
 import { Steps, Aside } from '@astrojs/starlight/components';
 
-
 The primary revival bot for Acrophobia is **Acrobot**, an open-source Python project by SecondSight05. It implements both the **Registration Server** and the **IRC Game Bot** (Game List + Game Room).
 
 - **GitHub:** [github.com/SecondSight05/Acrobot](https://github.com/SecondSight05/Acrobot)
@@ -15,25 +14,26 @@ The primary revival bot for Acrophobia is **Acrobot**, an open-source Python pro
 
 ## Architecture
 
-```
-[Acrophobia Client]
-      │
-      ▼
-[Dispatch Server]  ──→  serves Dispatch.ini (HTTP)
-      │
-      ▼
-[Content Server]   ──→  serves UpdateScript.ini + assets (HTTP)
-      │
-      ▼
-[Registration Server]  ──→  /cgi/acrval0.cgi  (HTTP CGI via Acrobot)
-      │
-      ▼
-[Game List IRC Server]  ──→  #Acro_List channel (Acrobot IRC bot)
-      │
-      ▼
-[Game Room IRC Server]  ──→  #Acro_000, etc. (Acrobot IRC bot)
-```
+```mermaid
+graph TD
+    A[Acrophobia Client]
+    B[Dispatch Server]
+    C[Content Server]
+    D[Registration Server]
+    E[Game List IRC Server]
+    F[Game Room IRC Server]
 
+    A --> B
+    B -->|serves Dispatch.ini HTTP| C
+    C -->|serves UpdateScript.ini + assets HTTP| D
+    D -->|/cgi/acrval0.cgi HTTP CGI via Acrobot| E
+    E -->|#Acro_List channel Acrobot IRC bot| F
+
+    F -.->|#Acro_000, etc. Acrobot IRC bot| F
+
+    style A fill:#e066ff,stroke:#333,color:#fff
+    style D fill:#9999ff,stroke:#333,color:#fff
+```
 ---
 
 ## Acrobot Components

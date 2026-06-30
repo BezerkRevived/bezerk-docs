@@ -1,12 +1,17 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import mermaid from "astro-mermaid";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://BezerkRevived.github.io",
   base: "/bezerk-docs",
   integrations: [
+    mermaid({
+      theme: "forest",
+      autoTheme: true,
+    }),
     starlight({
       title: "Bezerk Documentation",
       social: [
@@ -24,9 +29,7 @@ export default defineConfig({
       sidebar: [
         {
           label: "Library & Archives",
-          items: [
-            { label: "Client Installers", slug: "library/installers" },
-          ],
+          items: [{ label: "Client Installers", slug: "library/installers" }],
         },
         {
           label: "The Netshow",
